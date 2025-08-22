@@ -65,7 +65,8 @@ export function ChatInterface() {
     <div className="flex flex-col h-full">
       {/* Context Summary */}
       {summary && (
-        <div className="p-2 text-xs text-muted-foreground border-b bg-gray-50 dark:bg-gray-900/20">
+        // <div className="p-2 text-xs text-muted-foreground border-b bg-gray-50 dark:bg-gray-900/20">
+        <div className="p-2 text-xs text-muted-foreground border-b bg-[#292A2D] dark:bg-[#292A2D]">
           {summary}
         </div>
       )}

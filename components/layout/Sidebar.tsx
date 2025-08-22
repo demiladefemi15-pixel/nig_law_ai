@@ -51,7 +51,7 @@ export function Sidebar({ onItemClick }: SidebarProps) {
   }
 
   return (
-    <div className="w-64 bg-card border-r border-border flex flex-col">
+    <div className="w-64 bg-[#212327] border-r border-border flex flex-col"> // formally bg-card
       {/* User Info */}
       <div className="p-4 border-b border-border">
         <div className="flex items-center gap-3">
