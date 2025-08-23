@@ -31,7 +31,12 @@ app = FastAPI(
 # CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "https://jurist-ai.vercel.app"],
+    allow_origins=[
+        "http://localhost:3000", 
+        "https://jurist-ai.vercel.app",
+        "https://jurist-ai-frontend.vercel.app",
+        "https://jurist-ai-backend.vercel.app"
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

@@ -107,11 +107,11 @@ export function ChatInterface() {
       </div>
 
       {/* Feedback Section */}
-      {messages.length > 0 && messages[messages.length - 1].role === 'assistant' && (
+      {/* {messages.length > 0 && messages[messages.length - 1].role === 'assistant' && (
         <div className="flex-shrink-0 mb-4">
           <FeedbackSection messageId={messages[messages.length - 1].id} />
         </div>
-      )}
+      )} */}
     </div>
   )
 }
