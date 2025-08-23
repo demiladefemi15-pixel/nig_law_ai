@@ -51,9 +51,9 @@ export function Sidebar({ onItemClick }: SidebarProps) {
   }
 
   return (
-    <div className="w-64 bg-[#212327] border-r border-border flex flex-col"> // formally bg-card
+    <div className="w-64 h-full bg-[#212327] border-r border-border flex flex-col">
       {/* User Info */}
-      <div className="p-4 border-b border-border">
+      <div className="p-4 border-b border-border flex-shrink-0">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
             <User className="w-4 h-4 text-primary-foreground" />
@@ -66,7 +66,7 @@ export function Sidebar({ onItemClick }: SidebarProps) {
       </div>
 
       {/* Navigation Tabs */}
-      <div className="p-4">
+      <div className="p-4 flex-shrink-0">
         <nav className="space-y-1">
           {tabs.map((tab) => {
             const Icon = tab.icon
@@ -91,7 +91,7 @@ export function Sidebar({ onItemClick }: SidebarProps) {
 
       {/* Chat Sessions (only show for chat tab) */}
       {activeTab === 'chat' && (
-        <div className="flex-1 p-4 space-y-4">
+        <div className="flex-1 p-4 space-y-4 overflow-y-auto">
           <div className="flex items-center justify-between">
             <h3 className="text-sm font-medium">Chat Sessions</h3>
             <Button
@@ -137,7 +137,7 @@ export function Sidebar({ onItemClick }: SidebarProps) {
       )}
 
       {/* Footer */}
-      <div className="p-4 border-t border-border">
+      <div className="p-4 border-t border-border flex-shrink-0">
         <div className="text-center">
           <p className="text-xs text-muted-foreground mb-1">Beta Release</p>
           <p className="text-xs text-muted-foreground">

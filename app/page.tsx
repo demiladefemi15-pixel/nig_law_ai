@@ -38,8 +38,7 @@ export default function HomePage() {
   }
 
   return (
-    // <div className="flex h-screen bg-background">
-    <div className="flex h-screen bg-[#292A2D]">
+    <div className="flex h-screen bg-[#292A2D] overflow-hidden">
       {/* Mobile sidebar overlay */}
       {sidebarOpen && (
         <div 
@@ -57,8 +56,8 @@ export default function HomePage() {
       </div>
 
       {/* Main content */}
-      <main className="flex-1 flex flex-col lg:ml-0">
-        <header className="flex items-center sticky top-0 z-50 justify-between p-4 border-b bg-card">
+      <main className="flex-1 flex flex-col lg:ml-0 min-h-0">
+        <header className="flex items-center sticky top-0 z-30 justify-between p-4 border-b bg-[#292A2D] border-border">
           <div className="flex items-center gap-4">
             <Button
               variant="ghost"
@@ -74,7 +73,9 @@ export default function HomePage() {
           </div>
           <CountrySelector />
         </header>
-        <ChatInterface />
+        <div className="flex-1 min-h-0">
+          <ChatInterface />
+        </div>
       </main>
     </div>
   )

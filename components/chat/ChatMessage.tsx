@@ -64,9 +64,11 @@ export function ChatMessage({ message, isLatestAssistantMessage = false }: ChatM
         <div className={`rounded-lg p-3 ${
           isUser 
             ? 'bg-blue-500 text-white' 
-            : 'bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100'
+            : 'bg-[#292A2D] text-white'
         }`}>
-          <Markdown content={displayText} />
+          <div className="text-lg leading-relaxed">
+            <Markdown content={displayText} />
+          </div>
           
           {message.references && 
            (message.references as any).laws && 

@@ -80,18 +80,16 @@ export function FeedbackSection({ messageId }: FeedbackSectionProps) {
   }
 
   return (
-    <div className="border-t bg-gray-50 dark:bg-gray-900 p-4">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <span className="text-sm font-medium">Was this answer helpful?</span>
-        </div>
+    <div className="border-t bg-[#292A2D] p-3">
+      <div className="flex items-center justify-between mb-2">
+        <span className="text-sm font-medium">Was this answer helpful?</span>
         
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1">
           <Button
             variant="ghost"
             size="sm"
             onClick={() => handleFeedback(5, true)}
-            className="flex items-center gap-1"
+            className="flex items-center gap-1 h-8 px-2"
           >
             <ThumbsUp className="w-4 h-4" />
             Yes
@@ -101,7 +99,7 @@ export function FeedbackSection({ messageId }: FeedbackSectionProps) {
             variant="ghost"
             size="sm"
             onClick={() => handleFeedback(1, false)}
-            className="flex items-center gap-1"
+            className="flex items-center gap-1 h-8 px-2"
           >
             <ThumbsDown className="w-4 h-4" />
             No
@@ -109,17 +107,18 @@ export function FeedbackSection({ messageId }: FeedbackSectionProps) {
         </div>
       </div>
       
-      <div className="mt-3 flex gap-2">
+      <div className="flex gap-2">
         <Input
           placeholder="How can I improve? I'm still learning Nigerian law..."
           value={feedbackText}
           onChange={(e) => setFeedbackText(e.target.value)}
-          className="flex-1"
+          className="flex-1 h-8 text-sm"
         />
         <Button
           size="sm"
           onClick={handleTextFeedback}
           disabled={!feedbackText.trim()}
+          className="h-8 px-3"
         >
           <MessageSquare className="w-4 h-4 mr-1" />
           Submit

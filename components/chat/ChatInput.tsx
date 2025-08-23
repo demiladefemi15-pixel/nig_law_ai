@@ -1,9 +1,10 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
-import { Send, Paperclip, Mic, MicOff, Square } from 'lucide-react'
+import { Send, Paperclip, Mic, MicOff, Square, FileText, X } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
+import { useToast } from '@/hooks/useToast'
 
 interface ChatInputProps {
   onSend: (message: string) => void
@@ -14,8 +15,12 @@ export function ChatInput({ onSend, isLoading }: ChatInputProps) {
   const [message, setMessage] = useState('')
   const [isRecording, setIsRecording] = useState(false)
   const [hasPermission, setHasPermission] = useState<boolean | null>(null)
+  const [uploadedFiles, setUploadedFiles] = useState<Array<{ name: string; content: string }>>([])
+  const [isUploading, setIsUploading] = useState(false)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
   const recognitionRef = useRef<any>(null)
+  const { toast } = useToast()
 
   // Initialize speech recognition
   useEffect(() => {
@@ -96,11 +101,103 @@ export function ChatInput({ onSend, isLoading }: ChatInputProps) {
     }
   }
 
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files
+    if (!files || files.length === 0) return
+
+    setIsUploading(true)
+    
+    try {
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i]
+        
+        // Validate file type
+        const allowedTypes = [
+          'application/pdf',
+          'application/msword',
+          'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+          'application/vnd.ms-excel',
+          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+          'text/plain',
+          'application/rtf'
+        ]
+        
+        if (!allowedTypes.includes(file.type)) {
+          toast({
+            title: 'Invalid file type',
+            description: 'Please upload PDF, Word, Excel, or text files only.',
+            variant: 'destructive'
+          })
+          continue
+        }
+
+        // Validate file size (10MB limit)
+        if (file.size > 10 * 1024 * 1024) {
+          toast({
+            title: 'File too large',
+            description: 'File size must be less than 10MB.',
+            variant: 'destructive'
+          })
+          continue
+        }
+
+        const formData = new FormData()
+        formData.append('file', file)
+
+        const response = await fetch('/api/upload', {
+          method: 'POST',
+          body: formData
+        })
+
+        if (response.ok) {
+          const result = await response.json()
+          setUploadedFiles(prev => [...prev, { name: file.name, content: result.extractedText }])
+          
+          toast({
+            title: 'File uploaded successfully',
+            description: `${file.name} has been processed and is ready for analysis.`
+          })
+        } else {
+          const error = await response.json()
+          toast({
+            title: 'Upload failed',
+            description: error.error || 'Failed to upload file',
+            variant: 'destructive'
+          })
+        }
+      }
+    } catch (error) {
+      toast({
+        title: 'Upload error',
+        description: 'An error occurred while uploading the file.',
+        variant: 'destructive'
+      })
+    } finally {
+      setIsUploading(false)
+      // Reset file input
+      if (fileInputRef.current) {
+        fileInputRef.current.value = ''
+      }
+    }
+  }
+
+  const removeFile = (index: number) => {
+    setUploadedFiles(prev => prev.filter((_, i) => i !== index))
+  }
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    if (message.trim() && !isLoading) {
-      onSend(message.trim())
+    if ((message.trim() || uploadedFiles.length > 0) && !isLoading) {
+      let fullMessage = message.trim()
+      
+      if (uploadedFiles.length > 0) {
+        fullMessage += '\n\n**Uploaded Documents:**\n' + 
+          uploadedFiles.map(file => `- ${file.name}\n${file.content}`).join('\n\n')
+      }
+      
+      onSend(fullMessage)
       setMessage('')
+      setUploadedFiles([])
     }
   }
 
@@ -120,48 +217,83 @@ export function ChatInput({ onSend, isLoading }: ChatInputProps) {
   }, [message])
 
   return (
-    <form onSubmit={handleSubmit} className="flex items-end gap-2">
-      <div className="flex-1 relative">
-        <textarea
-          ref={textareaRef}
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          onKeyDown={handleKeyDown}
-          placeholder="Ask a legal question..."
-          className="w-full min-h-[40px] max-h-[120px] rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 resize-none"
-          disabled={isLoading}
-        />
-        <div className="absolute right-2 bottom-2 flex gap-1">
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon"
-            className="h-6 w-6"
-            disabled={isLoading}
-          >
-            <Paperclip className="h-3 w-3" />
-          </Button>
-          <Button
-            type="button"
-            variant={isRecording ? "destructive" : "ghost"}
-            size="icon"
-            className={`h-6 w-6 ${isRecording ? 'animate-pulse' : ''}`}
-            disabled={isLoading}
-            onClick={isRecording ? stopRecording : startRecording}
-            title={isRecording ? 'Stop recording' : 'Start voice input'}
-          >
-            {isRecording ? <Square className="h-3 w-3" /> : <Mic className="h-3 w-3" />}
-          </Button>
+    <div className="space-y-3">
+      {/* Uploaded Files Display */}
+      {uploadedFiles.length > 0 && (
+        <div className="flex flex-wrap gap-2 p-2 bg-[#404045] rounded-lg">
+          {uploadedFiles.map((file, index) => (
+            <div key={index} className="flex items-center gap-2 bg-[#292A2D] px-3 py-1 rounded-md">
+              <FileText className="h-4 w-4 text-blue-400" />
+              <span className="text-sm text-white">{file.name}</span>
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                onClick={() => removeFile(index)}
+                className="h-4 w-4 hover:bg-red-500 hover:text-white"
+              >
+                <X className="h-3 w-3" />
+              </Button>
+            </div>
+          ))}
         </div>
-      </div>
-      <Button
-        type="submit"
-        size="icon"
-        disabled={!message.trim() || isLoading}
-        className="h-10 w-10"
-      >
-        <Send className="h-4 w-4" />
-      </Button>
-    </form>
+      )}
+
+      {/* Hidden file input */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        multiple
+        accept=".pdf,.doc,.docx,.xls,.xlsx,.txt,.rtf"
+        onChange={handleFileUpload}
+        className="hidden"
+      />
+
+      <form onSubmit={handleSubmit} className="flex items-center gap-3 p-3 bg-[#404045] rounded-full focus-within:outline-none">
+        <div className="flex-1 relative flex items-center">
+          <textarea
+            ref={textareaRef}
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            onKeyDown={handleKeyDown}
+            placeholder="Ask a legal question..."
+            className="w-full min-h-[40px] max-h-[120px] rounded-md bg-transparent px-3 py-2.5 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus:outline-none focus:ring-0 disabled:cursor-not-allowed disabled:opacity-50 resize-none"
+            disabled={isLoading || isUploading}
+          />
+          <div className="absolute right-2 flex items-center gap-1">
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              className="h-6 w-6"
+              disabled={isLoading || isUploading}
+              onClick={() => fileInputRef.current?.click()}
+              title="Upload document"
+            >
+              <Paperclip className="h-5 w-5" />
+            </Button>
+            <Button
+              type="button"
+              variant={isRecording ? "destructive" : "ghost"}
+              size="icon"
+              className={`h-6 w-6 ${isRecording ? 'animate-pulse' : ''}`}
+              disabled={isLoading || isUploading}
+              onClick={isRecording ? stopRecording : startRecording}
+              title={isRecording ? 'Stop recording' : 'Start voice input'}
+            >
+              {isRecording ? <Square className="h-3 w-3" /> : <Mic className="h-5 w-5" />}
+            </Button>
+          </div>
+        </div>
+        <Button
+          type="submit"
+          size="icon"
+          disabled={(!message.trim() && uploadedFiles.length === 0) || isLoading || isUploading}
+          className="h-10 w-10 flex-shrink-0"
+        >
+          <Send className="h-4 w-4" />
+        </Button>
+      </form>
+    </div>
   )
 }
