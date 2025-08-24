@@ -12,7 +12,10 @@ export function Markdown({ content }: MarkdownProps) {
   return (
     <ReactMarkdown
       components={{
-        code({ node, inline, className, children, ...props }) {
+        code(
+          { children, className, ...props }: React.HTMLAttributes<HTMLElement>,
+          { inline = false }: { inline?: boolean }
+        ) {
           const match = /language-(\w+)/.exec(className || '')
           return !inline && match ? (
             <SyntaxHighlighter
