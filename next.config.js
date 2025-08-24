@@ -1,8 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  experimental: {
-    appDir: true,
-  },
+  // experimental options can be added here if needed, but 'appDir' is no longer supported in Next.js 14+
   images: {
     domains: ['images.clerk.dev'],
   },
