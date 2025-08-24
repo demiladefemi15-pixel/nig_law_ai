@@ -54,7 +54,7 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-[#212121] text-foreground;
   }
 }
 
@@ -64,11 +64,11 @@
   }
   
   .chat-message.user {
-    @apply bg-blue-500 text-white ml-auto;
+    @apply bg-blue-500 text-white text-[15px] ml-auto;
   }
   
   .chat-message.assistant {
-    @apply bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100;
+    @apply bg-gray-100 text-[15px] dark:bg-gray-800 text-gray-900 dark:text-gray-100;
   }
   
   .feedback-section {

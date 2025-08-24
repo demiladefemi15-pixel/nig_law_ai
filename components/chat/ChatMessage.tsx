@@ -58,13 +58,13 @@ export function ChatMessage({ message, isLatestAssistantMessage = false }: ChatM
         <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
           isUser ? 'bg-blue-500' : 'bg-gray-600'
         }`}>
-          {isUser ? <User className="w-4 h-4 text-white" /> : <Bot className="w-4 h-4 text-white" />}
+          {isUser ? <User className="w-4 h-4 text-white text-[10px] text-justify" /> : <Bot className="w-4 h-4 text-white text-[10px] text-justify" />}
         </div>
         
         <div className={`rounded-lg p-3 ${
           isUser 
-            ? 'bg-blue-500 text-white' 
-            : 'bg-[#292A2D] text-white'
+            ? 'bg-[#303030] text-white text-[10px] text-justify' 
+            : 'bg-[#212121] text-white text-[10px] text-justify'
         }`}>
           <div className="text-lg leading-relaxed">
             <Markdown content={displayText} />

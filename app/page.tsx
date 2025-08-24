@@ -38,7 +38,7 @@ export default function HomePage() {
   }
 
   return (
-    <div className="flex h-screen bg-[#292A2D] overflow-hidden">
+    <div className="flex h-screen bg-[#212121] overflow-hidden">
       {/* Mobile sidebar overlay */}
       {sidebarOpen && (
         <div 
@@ -57,7 +57,7 @@ export default function HomePage() {
 
       {/* Main content */}
       <main className="flex-1 flex flex-col lg:ml-0 min-h-0">
-        <header className="flex items-center sticky top-0 z-30 justify-between p-4 border-b bg-[#292A2D] border-border">
+        <header className="flex items-center sticky top-0 z-30 justify-between p-4 border-b bg-[#212121] border-border">
           <div className="flex items-center gap-4">
             <Button
               variant="ghost"

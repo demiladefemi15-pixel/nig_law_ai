@@ -5,7 +5,7 @@ import { useUser } from '@clerk/nextjs'
 import { Message } from '@/types/chat'
 import { ChatMessage } from './ChatMessage'
 import { ChatInput } from './ChatInput'
-import { FeedbackSection } from './FeedbackSection'
+// import { FeedbackSection } from './FeedbackSection'
 import { useChatStore } from '@/hooks/useChatStore'
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner'
 

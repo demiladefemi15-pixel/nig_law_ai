@@ -51,7 +51,7 @@ export function Sidebar({ onItemClick }: SidebarProps) {
   }
 
   return (
-    <div className="w-64 h-full bg-[#212327] border-r border-border flex flex-col">
+    <div className="w-64 h-full bg-[#181818] border-r border-border flex flex-col">
       {/* User Info */}
       <div className="p-4 border-b border-border flex-shrink-0">
         <div className="flex items-center gap-3">
